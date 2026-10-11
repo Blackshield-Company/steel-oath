@@ -1,17 +1,17 @@
 # Nexus Mods page: Steel Oath
 
-Early beta: v0.1.0 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.1.1 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** Steel Oath
-- **Version:** 0.1.0 (early beta)
+- **Version:** 0.1.1 (early beta)
 - **Category:** Gameplay
 - **Suggested tags:** Gameplay, Lore-Friendly, Combat, Roleplay, Powers, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT, so allow modification and conversions with credit. Don't allow re-uploads of the archive itself.
-- **File to upload:** `SteelOath-0.1.0.zip` (FOMOD), main file, named "Steel Oath".
+- **File to upload:** `SteelOath-0.1.1.zip` (FOMOD), main file, named "Steel Oath".
 
 ## Description (paste into the BBCode editor)
 
@@ -19,7 +19,7 @@ Early beta: v0.1.0 passed every automated build check but hasn't been playtested
 [center][size=6][b]STEEL OATH[/b][/size]
 [size=3][i]Swear it. Keep it. The longer it holds, the stronger you become.[/i][/size]
 
-[size=3][color=#e0a030][b]EARLY BETA (v0.1.0)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
+[size=3][color=#e0a030][b]EARLY BETA (v0.1.1)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
 
 [line]
 
@@ -32,7 +32,7 @@ After Helgen you gain a lesser power, [b]Swear an Oath[/b]. Pick a warrior's vow
 [*][b]Oath of the Shield[/b]: keep a shield on your arm (a few seconds' grace to swap shields). [i]Block +10 / +20 / +30[/i]
 [*][b]Oath of Iron[/b]: wear no light armor, light shields included. [i]Armor +30 / +60 / +100[/i]
 [*][b]Oath of Endurance[/b]: no potions, food or poisons while in combat. [i]Stamina +20 / +40 / +60[/i]
-[*][b]Oath of Close Quarters[/b]: never equip a bow. [i]One-Handed and Two-Handed +10 / +20 / +30[/i]
+[*][b]Oath of Close Quarters[/b]: never equip a bow (Auriel's Bow is allowed during the Kindred Judgment fight with Harkon). [i]One-Handed and Two-Handed +10 / +20 / +30[/i]
 [/list]
 
 [size=4][b]How it works[/b][/size]

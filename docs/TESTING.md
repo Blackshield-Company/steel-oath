@@ -1,6 +1,6 @@
-# In-game test checklist (v0.1.0, early beta)
+# In-game test checklist (v0.1.1, early beta)
 
-v0.1.0 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
+v0.1.1 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
 
 Open the console with `~`. Commands that take a quest or global accept the EditorID directly. `player.addspell` needs a full FormID, which depends on your load order, so look it up first:
 

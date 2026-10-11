@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-11
+
+Still early beta, not yet playtested in game.
+
+### Changed
+- Oath of Close Quarters: Auriel's Bow no longer breaks the oath during Kindred Judgment (Dawnguard), from "Confront Harkon" until the quest ends (DLC1VQ08 stages 40 to 199). The fight needs the bow to break Harkon's blood shield. This applies when you equip it and when you swear the oath. Any other bow, or Auriel's Bow outside that fight, still breaks it. No effect without Dawnguard.
+
 ## [0.1.0] - 2026-10-06
 
 Early beta. First public release. It passes every automated check in the build (Papyrus compile, plugin validation, round trip, FOMOD schema) but has not been playtested in-game yet. Please report problems on the Nexus page or on GitHub.

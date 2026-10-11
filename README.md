@@ -2,7 +2,7 @@
 
 A Skyrim Special Edition mod about warrior's vows. Swear an oath through a lesser power, and keep it: the longer it holds, the stronger its blessing grows. Break it and you're marked as an oathbreaker for a day, and the oath won't take you back for three.
 
-**Status: v0.1.0, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
+**Status: v0.1.1, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
 
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
@@ -19,7 +19,7 @@ Every vow is something the game reports to scripts without SKSE, so the mod can 
 | Oath of the Shield | Keep a shield on your arm. A 3-second grace lets you swap shields. You need a shield to swear it. | Block +10 / +20 / +30 |
 | Oath of Iron | Wear no light armor, light shields included. Heavy armor and clothing are fine. | Armor +30 / +60 / +100 |
 | Oath of Endurance | No potions, food or poisons while in combat. | Stamina +20 / +40 / +60 |
-| Oath of Close Quarters | Never equip a bow. | One-Handed and Two-Handed +10 / +20 / +30 |
+| Oath of Close Quarters | Never equip a bow (Auriel's Bow is allowed during the Kindred Judgment fight with Harkon). | One-Handed and Two-Handed +10 / +20 / +30 |
 
 - **Up to three oaths at once.**
 - **Blessings grow**: Sworn when you swear, Steadfast after 3 in-game days, Unbroken after 7.

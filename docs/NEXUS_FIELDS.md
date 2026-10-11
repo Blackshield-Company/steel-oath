@@ -4,7 +4,7 @@ Game: Skyrim Special Edition
 
 Mod name: Steel Oath
 
-Version: 0.1.0 (early beta)
+Version: 0.1.1 (early beta)
 
 Category: Gameplay
 
@@ -12,9 +12,9 @@ Short summary (213 chars):
 Swear warrior's oaths through a lesser power: no spells, keep your shield, no light armor and more. Blessings grow while you keep them; break one and pay. Up to 3 at once. Base game only, ESL, no SKSE. Early beta.
 
 Main file:
-- File: SteelOath-0.1.0.zip (FOMOD installer)
+- File: SteelOath-0.1.1.zip (FOMOD installer)
 - File name: Steel Oath
-- File version: 0.1.0
+- File version: 0.1.1
 - File category: Main Files
 - File description: Early beta. FOMOD installer with SteelOath.esp (ESL-flagged), compiled scripts, and optional Papyrus sources. Requires only Skyrim Special Edition / Anniversary Edition (1.5.97 or 1.6.x).
 

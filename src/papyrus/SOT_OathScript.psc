@@ -412,7 +412,7 @@ Function OnPlayerEquipped(Form akBaseObject)
 	If IsActive(OATH_ENDURANCE) && (akBaseObject as Potion) && Game.GetPlayer().IsInCombat()
 		BreakOath(OATH_ENDURANCE, "you took a potion, food or poison in combat.")
 	EndIf
-	If IsActive(OATH_CLOSE) && (akBaseObject as Weapon) && akBaseObject.HasKeyword(WeapTypeBow)
+	If IsActive(OATH_CLOSE) && (akBaseObject as Weapon) && akBaseObject.HasKeyword(WeapTypeBow) && !IsExemptBow(akBaseObject)
 		BreakOath(OATH_CLOSE, "you took up a bow.")
 	EndIf
 EndFunction
@@ -445,13 +445,29 @@ EndFunction
 ; Helpers
 ; ---------------------------------------------------------------------------
 
+; 0.1.1: Kindred Judgment (Dawnguard DLC1VQ08) needs Auriel's Bow to break Harkon's blood shield.
+; Auriel's Bow does not break the Oath of Close Quarters while that quest is at stage 40 to 199.
+; Without Dawnguard both lookups return None and nothing is exempt.
+Bool Function IsExemptBow(Form akWeapon)
+	Form auriel = Game.GetFormFromFile(0x000800, "Dawnguard.esm")
+	If !auriel || akWeapon != auriel
+		Return False
+	EndIf
+	Quest kj = Game.GetFormFromFile(0x007C25, "Dawnguard.esm") as Quest
+	If !kj || !kj.IsRunning()
+		Return False
+	EndIf
+	Int st = kj.GetStage()
+	Return st >= 40 && st < 200
+EndFunction
+
 Bool Function IsActive(Int i)
 	Return active.Length == OATH_COUNT && active[i]
 EndFunction
 
 Bool Function HoldsBow(Actor akActor)
 	Weapon w = akActor.GetEquippedWeapon(False)
-	Return w && w.HasKeyword(WeapTypeBow)
+	Return w && w.HasKeyword(WeapTypeBow) && !IsExemptBow(w)
 EndFunction
 
 Spell Function TierSpell(Int aiTier, Int i)
