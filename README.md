@@ -1,3 +1,5 @@
+![steel-oath](.github/preview.png)
+
 # Steel Oath
 
 A Skyrim Special Edition mod about warrior's vows. Swear an oath through a lesser power, and keep it: the longer it holds, the stronger its blessing grows. Break it and you're marked as an oathbreaker for a day, and the oath won't take you back for three.
