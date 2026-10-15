@@ -73,3 +73,10 @@ build.sh          One-command build
 - [papyrus-compiler](https://github.com/russo-2025/papyrus-compiler) by russo-2025 (MIT), downloaded at build time.
 - FOMOD schema from [GandaG/fomod-schema](https://github.com/GandaG/fomod-schema) (MIT).
 - Skyrim and its assets belong to Bethesda Softworks. This repo contains no Bethesda assets or script sources; the plugin references vanilla records by FormID.
+
+## Support
+
+Donations are optional. Nothing in the mod is gated on them.
+
+- GitHub Sponsors: https://github.com/sponsors/synthalorian
+- Ko-fi: https://ko-fi.com/synthalorian
