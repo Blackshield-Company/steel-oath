@@ -34,6 +34,9 @@ internal static class Program
         var mod = new SkyrimMod(modKey, Release);
         var builder = new Builder(mod, ids);
         builder.Build();
+        // Every <Global=X> in quest-owned text goes into its quest's Text Display Globals.
+        var textGlobals = TextGlobals.Register(mod);
+        Console.WriteLine($"[generate] text display globals: {textGlobals} registered from text tags");
 
         mod.ModHeader.Flags |= SkyrimModHeader.HeaderFlag.Small; // ESL-flagged ESP
         // Header 1.70 (not 1.71): FormIDs start at 0x800, so this loads on every SE/AE
