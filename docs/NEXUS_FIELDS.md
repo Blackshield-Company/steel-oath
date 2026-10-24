@@ -35,4 +35,4 @@ Permissions (suggestion; code is MIT on GitHub):
 Tags (pick the closest matches in the tag picker):
 Gameplay, Lore-Friendly, Combat, Roleplay, Powers, ESL, No SKSE, Scripted
 
-Source: https://github.com/synthalorian/steel-oath
+Source: https://github.com/Blackshield-Company/steel-oath
