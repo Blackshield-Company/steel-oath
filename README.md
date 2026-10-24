@@ -9,7 +9,7 @@ A Skyrim Special Edition mod about warrior's vows. Swear an oath through a lesse
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
 - Plugin: `SteelOath.esp`, ESL-flagged, Skyrim.esm is the only master. No vanilla records edited.
-- Compatible with [Blackshield Company](https://github.com/synthalorian/blackshield-company), [Daedric Ledger: Bounties of Oblivion](https://github.com/synthalorian/bounties-of-oblivion) and [Contract Hunter](https://github.com/synthalorian/contract-hunter): separate prefix (`SOT_`), records and globals.
+- Compatible with [Blackshield Company](https://github.com/Blackshield-Company/blackshield-company), [Daedric Ledger: Bounties of Oblivion](https://github.com/Blackshield-Company/bounties-of-oblivion) and [Contract Hunter](https://github.com/Blackshield-Company/contract-hunter): separate prefix (`SOT_`), records and globals.
 
 ## The oaths
 
@@ -31,7 +31,7 @@ Every vow is something the game reports to scripts without SKSE, so the mod can 
 
 ## Install
 
-Grab `SteelOath-<version>.zip` from [Releases](https://github.com/synthalorian/steel-oath/releases) (FOMOD installer).
+Grab `SteelOath-<version>.zip` from [Releases](https://github.com/Blackshield-Company/steel-oath/releases) (FOMOD installer).
 
 - **Mod Organizer 2**: *Install a new mod from an archive*, pick the zip, enable `SteelOath.esp`.
 - **Vortex**: drag the zip into the Mods page, install and enable it.

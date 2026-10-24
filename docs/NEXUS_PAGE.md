@@ -77,7 +77,7 @@ As with any scripted mod, don't remove it mid-playthrough. If you must, renounce
 More oaths where the game allows detection, an oath shrine as an alternative to the power, and an MCM.
 
 [size=4][b]Source[/b][/size]
-Open source (MIT): [url=https://github.com/synthalorian/steel-oath]github.com/synthalorian/steel-oath[/url]
+Open source (MIT): [url=https://github.com/Blackshield-Company/steel-oath]github.com/Blackshield-Company/steel-oath[/url]
 
 [size=4][b]Credits[/b][/size]
 [list]
