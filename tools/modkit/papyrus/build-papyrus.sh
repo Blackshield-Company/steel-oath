@@ -66,5 +66,7 @@ else
   done
 fi
 
+# Fail on backslash escapes in string literals: neither this compiler nor the game expands them.
+python3 "$KIT_DIR/papyrus/check_string_escapes.py" "$SRC" "$OUT"
 python3 "$KIT_DIR/papyrus/pex_normalize.py" "$OUT"/*.pex
 echo "[papyrus] $(ls "$OUT"/*.pex | wc -l) script(s) compiled to $OUT"

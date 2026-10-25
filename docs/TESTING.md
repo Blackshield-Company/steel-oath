@@ -1,6 +1,6 @@
-# In-game test checklist (v0.1.1, early beta)
+# In-game test checklist (v0.1.2, early beta)
 
-v0.1.1 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
+v0.1.2 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
 
 Open the console with `~`. Commands that take a quest or global accept the EditorID directly. `player.addspell` needs a full FormID, which depends on your load order, so look it up first:
 
@@ -74,6 +74,11 @@ For each: confirm the "Oath broken: …" notification, the blessing disappears f
 
 ## 6. Persistence
 - [ ] Save with active oaths, a cooldown and the penalty running. Quit to desktop, reload. Blessings stay, the next tier still arrives, and the penalty still ends on time.
+
+## 7. v0.1.2 checks (not yet run in game)
+- [ ] Swear two oaths, break a third (so a cooldown and the oathbreaker penalty run), then open *My oaths*: the title, each oath and cooldown, and the oathbreaker line each sit on their own line, with a blank line before the oathbreaker line. No `\n` or backslash text anywhere.
+- [ ] With no oaths and no cooldowns, *My oaths* shows the title and "You hold no oaths." on separate lines.
+- [ ] If the box shows one long line instead, the `LineBreak` property is empty (a save from before 0.1.2 that kept the old script). The text is still readable; please report it.
 
 ## Stuck? Reset commands
 ```
