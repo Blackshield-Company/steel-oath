@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-10-25
+
+Still early beta. Built and checked, but not yet played in game (no Skyrim install is available to the build).
+
+### Fixed
+- The oath status box (*My oaths*) printed a literal backslash-n instead of starting a new line. Papyrus text now takes its line breaks from a real line-feed character carried by a `LineBreak` property that the plugin fills, and the build fails if any Papyrus string literal or compiled string constant contains a backslash escape.
+- Save-compatible: no scripts, properties or records were renamed, and FormIDs are unchanged.
+
 ## [0.1.1] - 2026-10-11
 
 Still early beta, not yet playtested in game.

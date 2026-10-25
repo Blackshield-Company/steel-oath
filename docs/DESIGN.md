@@ -31,6 +31,7 @@ All handlers return at once when no oath is active.
 
 - Before the power is granted: a 30-second real-time poll that stops once the player is past Helgen and in control.
 - After that, there is never a repeating timer. `ScheduleTick()` registers one game-time update for the next moment anything changes (the next blessing tier, the end of a cooldown, the end of the oathbreaker penalty), and nothing at all when no oath or cooldown is pending.
+- Text: Papyrus string literals never contain backslash escapes (the build compiler and the game do not expand them). Line breaks come from `SOT_OathScript.LineBreak`, a string property holding one real LF that the generator fills; `Br()` falls back to a space when it is empty (a pre-0.1.2 save). `check_string_escapes.py` and the plugin validator fail the build on a literal backslash escape.
 
 ## Scaled down from the concept (documented on purpose)
 

@@ -39,6 +39,14 @@ Message Property SOT_MsgSwearMenu Auto
 Message Property SOT_MsgRenounceMenu Auto
 Message[] Property ConfirmMessages Auto
 
+; A single real line-feed character (0x0A), filled by the plugin generator.
+; Papyrus string literals cannot hold one, and the build compiler does not expand
+; backslash escapes (the text would print a literal backslash and letter), so the
+; only escape-free way to break a line in a message box is to carry the character
+; in this property. Empty (an old save that predates 0.1.2): Br() falls back to a
+; plain space. Never write a backslash in a string literal; the build rejects it.
+String Property LineBreak Auto
+
 Int Property OATH_STEEL = 0 AutoReadOnly
 Int Property OATH_SHIELD = 1 AutoReadOnly
 Int Property OATH_IRON = 2 AutoReadOnly
@@ -156,31 +164,47 @@ EndFunction
 
 String Function StatusText()
 	Float now = Utility.GetCurrentGameTime()
-	String text = "YOUR OATHS\n"
+	String text = "YOUR OATHS" + Br()
 	Bool any = False
 	Int i = 0
 	While i < OATH_COUNT
 		If active[i]
 			any = True
-			text += "\n" + OathName(i) + ": " + TierName(tier[i]) + ", kept " + DurationText((now - swornAt[i]) * 24.0)
+			text += Br() + OathName(i) + ": " + TierName(tier[i]) + ", kept " + DurationText((now - swornAt[i]) * 24.0)
 			If tier[i] < 2
 				text += ". Next blessing in " + DurationText((swornAt[i] + DaysForTier(tier[i] + 1) - now) * 24.0)
 			EndIf
 			text += "."
 		ElseIf cooldownUntil[i] > now
 			any = True
-			text += "\n" + OathName(i) + ": can be sworn again in " + DurationText((cooldownUntil[i] - now) * 24.0) + "."
+			text += Br() + OathName(i) + ": can be sworn again in " + DurationText((cooldownUntil[i] - now) * 24.0) + "."
 		EndIf
 		i += 1
 	EndWhile
 	If breakerUntil > now
 		any = True
-		text += "\n\nOathbreaker: " + DurationText((breakerUntil - now) * 24.0) + " left."
+		text += Br(2) + "Oathbreaker: " + DurationText((breakerUntil - now) * 24.0) + " left."
 	EndIf
 	If !any
-		text += "\nYou hold no oaths."
+		text += Br() + "You hold no oaths."
 	EndIf
 	Return text
+EndFunction
+
+; aiCount line breaks, for Debug.MessageBox text. Falls back to one space if the
+; LineBreak property is empty, so text stays readable and never shows a backslash.
+String Function Br(Int aiCount = 1)
+	String sep = LineBreak
+	If sep == ""
+		Return " "
+	EndIf
+	String result = ""
+	Int i = 0
+	While i < aiCount
+		result += sep
+		i += 1
+	EndWhile
+	Return result
 EndFunction
 
 String Function DurationText(Float afHours)

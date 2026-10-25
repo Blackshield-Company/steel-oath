@@ -156,7 +156,10 @@ internal sealed class Builder
                 Vmad.Obj("ArmorLight", ArmorLight), Vmad.Obj("ArmorShield", ArmorShield), Vmad.Obj("WeapTypeBow", WeapTypeBow),
                 Vmad.Obj("SOT_MsgIntro", msgIntro), Vmad.Obj("SOT_MsgMainMenu", msgMain),
                 Vmad.Obj("SOT_MsgSwearMenu", msgSwear), Vmad.Obj("SOT_MsgRenounceMenu", msgRenounce),
-                Vmad.ObjList("ConfirmMessages", msgConfirm)))
+                Vmad.ObjList("ConfirmMessages", msgConfirm),
+                // One real line feed. Papyrus string literals cannot hold one and the build
+                // compiler does not expand backslash escapes, so scripts take it from here.
+                Vmad.Str("LineBreak", "\n")))
             .WithAliasScripts(questOath, AliasPlayer, Vmad.Script("SOT_PlayerAliasScript", Vmad.Obj("Oaths", questOath)));
     }
 

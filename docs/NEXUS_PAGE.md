@@ -1,17 +1,17 @@
 # Nexus Mods page: Steel Oath
 
-Early beta: v0.1.1 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.1.2 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** Steel Oath
-- **Version:** 0.1.1 (early beta)
+- **Version:** 0.1.2 (early beta)
 - **Category:** Gameplay
 - **Suggested tags:** Gameplay, Lore-Friendly, Combat, Roleplay, Powers, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT, so allow modification and conversions with credit. Don't allow re-uploads of the archive itself.
-- **File to upload:** `SteelOath-0.1.1.zip` (FOMOD), main file, named "Steel Oath".
+- **File to upload:** `SteelOath-0.1.2.zip` (FOMOD), main file, named "Steel Oath".
 
 ## Description (paste into the BBCode editor)
 
@@ -19,7 +19,7 @@ Early beta: v0.1.1 passed every automated build check but hasn't been playtested
 [center][size=6][b]STEEL OATH[/b][/size]
 [size=3][i]Swear it. Keep it. The longer it holds, the stronger you become.[/i][/size]
 
-[size=3][color=#e0a030][b]EARLY BETA (v0.1.1)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
+[size=3][color=#e0a030][b]EARLY BETA (v0.1.2)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
 
 [line]
 

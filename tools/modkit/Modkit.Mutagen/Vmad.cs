@@ -68,5 +68,6 @@ public static class Vmad
 
     public static ScriptIntProperty Int(string name, int value) => new() { Name = name, Flags = ScriptProperty.Flag.Edited, Data = value };
     public static ScriptFloatProperty Float(string name, float value) => new() { Name = name, Flags = ScriptProperty.Flag.Edited, Data = value };
+    public static ScriptStringProperty Str(string name, string value) => new() { Name = name, Flags = ScriptProperty.Flag.Edited, Data = value };
     public static ScriptBoolProperty Bool(string name, bool value) => new() { Name = name, Flags = ScriptProperty.Flag.Edited, Data = value };
 }
