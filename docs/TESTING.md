@@ -96,7 +96,7 @@ stopquest SOT_OathQuest           (then startquest SOT_OathQuest: resets all oat
 - [ ] Breaking or renouncing before Unbroken gives no kept credit. Breaking after Unbroken leaves the earned count intact.
 - [ ] For title boundaries, set kept/broken to produce net −3, −2, −1, 0, 1, 2, 3, 5, 6, 7. Reopen the ledger each time; compare the DESIGN title table. Restore real counts afterwards.
 - [ ] Hold an Unbroken oath for further whole days and read the ledger: longest updates even with no further tier timer.
-- [ ] Upgrade a 0.1.1 save: existing blessings remain, new transitions count once, already Unbroken oaths do not gain retroactive credit. Open the ledger before and after a reload; all three numbers resolve. Test swearing, breaking in a nested hold location, bounty, sounds, and the first token award without restarting the controller quest.
+- [ ] Upgrade 0.1.1 and 0.1.2 saves: existing blessings remain, new transitions count once, already Unbroken oaths do not gain retroactive credit. Open the ledger before and after a reload; all three numbers resolve. Test swearing, breaking in a nested hold location, bounty, sounds, and the first token award without restarting the controller quest.
 
 ## 9. Tokens
 Use a disposable save and short tier/cooldown tunables. To reach boundaries quickly,

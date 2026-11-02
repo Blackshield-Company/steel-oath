@@ -47,7 +47,7 @@ After Helgen you gain a lesser power, [b]Swear an Oath[/b]. Pick a warrior's vow
 [*]Your first kept oath awards an amulet: Speechcraft +5 / +10 / +15 / +20 at 1 / 3 / 6 / 10 kept words. Carried tokens upgrade; breaking strikes them with Speechcraft -10 until another oath is kept. Lost or sold tokens are not replaced.
 [*]Breaking in a Skyrim hold adds 100 non-violent bounty there. Renouncing adds none. Original sounds mark swearing and breaking.
 [*][b]My oaths[/b] shows how long each oath has held, when the next blessing comes, and any cooldowns.
-[*]Event-driven scripts with no polling loops: the mod only wakes up when you cast, equip or unequip something, or when a blessing or penalty is due.
+[*]Event-driven scripts: once the power is granted, the mod only wakes up when you cast, equip or unequip something, or when a blessing, cooldown or penalty is due. A short startup check waits until you are past Helgen.
 [/list]
 
 [size=4][b]Requirements[/b][/size]
