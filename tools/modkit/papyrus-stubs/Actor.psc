@@ -27,3 +27,5 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 EndEvent
 Spell Function GetEquippedSpell(Int aiSource) native
 Race Function GetRace() native
+Bool Function IsEquipped(Form akItem) native
+Function EquipItem(Form akItem, Bool abPreventRemoval = False, Bool abSilent = False) native

@@ -2,6 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
   <moduleName>Steel Oath @VERSION@</moduleName>
   <requiredInstallFiles>
+    <!-- Core includes the plugin, scripts and Sound/fx/SteelOath motifs. -->
     <folder source="00 Core" destination="" />
   </requiredInstallFiles>
   <installSteps order="Explicit">

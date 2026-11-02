@@ -30,6 +30,8 @@ The build tooling for the Blackshield mod series, written to be reused by every 
 
 ## Notes
 
+- FOMOD schema validation uses `xmllint`, or Python `lxml` when `xmllint` is unavailable.
+
 - Mutagen writes the plugin with `WithNoLoadOrder()`. Only reference masters you list in the validator's allowed set (Skyrim.esm here).
 - Vanilla FormIDs were looked up with the `Mutagen.Bethesda.FormKeys.SkyrimSE` NuGet package. Mesh paths and record shapes were checked against public Spriggit exports of vanilla records. No Skyrim.esm was needed on the build machine.
 - To check the stubs against real headers on a machine with the game installed: unpack `Data/Scripts.zip` and run `./build.sh -H "<Skyrim>/Data/Source/Scripts"`.

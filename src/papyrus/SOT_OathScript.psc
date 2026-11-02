@@ -14,6 +14,17 @@ GlobalVariable[] Property AvailableFlags Auto
 GlobalVariable Property SOT_ActiveCount Auto
 GlobalVariable Property SOT_CanSwear Auto
 GlobalVariable Property SOT_MaxOaths Auto
+GlobalVariable Property SOT_OathsKept Auto
+GlobalVariable Property SOT_BountyEnabled Auto
+GlobalVariable Property SOT_BountyGold Auto
+Armor[] Property Tokens Auto
+Armor Property SOT_TokenStruck Auto
+Location[] Property HoldLocations Auto
+Faction[] Property CrimeFactions Auto
+Sound Property SOT_SwearSound Auto
+Sound Property SOT_BreakSound Auto
+Message[] Property LedgerMessages Auto
+Quest Property LedgerQuest Auto
 GlobalVariable Property SOT_OathsBroken Auto
 GlobalVariable Property SOT_LongestOathDays Auto
 GlobalVariable Property SOT_Tier2Days Auto
@@ -62,6 +73,7 @@ Float[] cooldownUntil
 Float breakerUntil = 0.0
 Int activeCount = 0
 Bool shieldCheckPending = False
+Bool swornWordReady = False
 
 ; ---------------------------------------------------------------------------
 ; Startup: grant the power once the player is past Helgen
@@ -121,6 +133,7 @@ EndFunction
 ; ---------------------------------------------------------------------------
 
 Function OpenMenu()
+	InitSwornWord()
 	InitArrays()
 	RefreshFlags()
 	Bool keepOpen = True
@@ -132,6 +145,9 @@ Function OpenMenu()
 			keepOpen = !RenounceMenu()
 		ElseIf choice == 2
 			Debug.MessageBox(StatusText())
+			keepOpen = False
+		ElseIf choice == 3
+			ReadLedger()
 			keepOpen = False
 		Else
 			keepOpen = False
@@ -225,6 +241,7 @@ EndFunction
 ; ---------------------------------------------------------------------------
 
 Function Swear(Int i)
+	InitSwornWord()
 	Actor player = Game.GetPlayer()
 	If active[i]
 		Return
@@ -243,6 +260,7 @@ Function Swear(Int i)
 		Debug.MessageBox("Put away your bow before you swear the Oath of Close Quarters.")
 		Return
 	EndIf
+	SOT_SwearSound.Play(player)
 	active[i] = True
 	tier[i] = 0
 	swornAt[i] = Utility.GetCurrentGameTime()
@@ -253,6 +271,7 @@ Function Swear(Int i)
 EndFunction
 
 Function BreakOath(Int i, String asReason)
+	InitSwornWord()
 	If !IsActive(i)
 		Return
 	EndIf
@@ -268,6 +287,9 @@ Function BreakOath(Int i, String asReason)
 		player.AddSpell(SOT_AbOathbreaker, False)
 	EndIf
 	SOT_OathsBroken.Mod(1)
+	SOT_BreakSound.Play(player)
+	ReplaceToken(SOT_TokenStruck, False)
+	WrongedHold()
 	RefreshFlags()
 	ScheduleTick()
 	Debug.Notification("Oath broken: " + asReason)
@@ -308,6 +330,7 @@ EndFunction
 ; ---------------------------------------------------------------------------
 
 Event OnUpdateGameTime()
+	InitSwornWord()
 	Float now = Utility.GetCurrentGameTime()
 	Actor player = Game.GetPlayer()
 	Int i = 0
@@ -324,6 +347,10 @@ Event OnUpdateGameTime()
 				player.RemoveSpell(TierSpell(tier[i], i))
 				player.AddSpell(TierSpell(want, i), False)
 				tier[i] = want
+				If want == 2
+					SOT_OathsKept.Mod(1)
+					RewardToken()
+				EndIf
 				Debug.Notification("Your " + OathName(i) + " holds. The blessing grows: " + TierName(want) + ".")
 			EndIf
 			UpdateLongest(kept)
@@ -530,4 +557,173 @@ String Function OathName(Int i)
 		Return "Oath of Endurance"
 	EndIf
 	Return "Oath of Close Quarters"
+EndFunction
+
+; ---------------------------------------------------------------------------
+; The sworn word: ledger, charm and the wronged hold
+; ---------------------------------------------------------------------------
+
+; Existing quest instances in saves can retain None for newly added properties.
+; Resolve only the v0.2 forms lazily, without resetting any saved oath state.
+Function InitSwornWord()
+	If swornWordReady
+		Return
+	EndIf
+	SOT_OathsKept = Game.GetFormFromFile(0x000838, "SteelOath.esp") as GlobalVariable
+	SOT_BountyEnabled = Game.GetFormFromFile(0x000839, "SteelOath.esp") as GlobalVariable
+	SOT_BountyGold = Game.GetFormFromFile(0x00083A, "SteelOath.esp") as GlobalVariable
+	SOT_TokenStruck = Game.GetFormFromFile(0x000849, "SteelOath.esp") as Armor
+	SOT_SwearSound = Game.GetFormFromFile(0x00084B, "SteelOath.esp") as Sound
+	SOT_BreakSound = Game.GetFormFromFile(0x00084D, "SteelOath.esp") as Sound
+	LedgerQuest = Game.GetFormFromFile(0x000853, "SteelOath.esp") as Quest
+	Tokens = new Armor[4]
+	Tokens[0] = Game.GetFormFromFile(0x00083D, "SteelOath.esp") as Armor
+	Tokens[1] = Game.GetFormFromFile(0x000840, "SteelOath.esp") as Armor
+	Tokens[2] = Game.GetFormFromFile(0x000843, "SteelOath.esp") as Armor
+	Tokens[3] = Game.GetFormFromFile(0x000846, "SteelOath.esp") as Armor
+	LedgerMessages = new Message[5]
+	LedgerMessages[0] = Game.GetFormFromFile(0x00084E, "SteelOath.esp") as Message
+	LedgerMessages[1] = Game.GetFormFromFile(0x00084F, "SteelOath.esp") as Message
+	LedgerMessages[2] = Game.GetFormFromFile(0x000850, "SteelOath.esp") as Message
+	LedgerMessages[3] = Game.GetFormFromFile(0x000851, "SteelOath.esp") as Message
+	LedgerMessages[4] = Game.GetFormFromFile(0x000852, "SteelOath.esp") as Message
+	HoldLocations = new Location[9]
+	HoldLocations[0] = Game.GetFormFromFile(0x016772, "Skyrim.esm") as Location
+	HoldLocations[1] = Game.GetFormFromFile(0x01676A, "Skyrim.esm") as Location
+	HoldLocations[2] = Game.GetFormFromFile(0x01676C, "Skyrim.esm") as Location
+	HoldLocations[3] = Game.GetFormFromFile(0x016770, "Skyrim.esm") as Location
+	HoldLocations[4] = Game.GetFormFromFile(0x016769, "Skyrim.esm") as Location
+	HoldLocations[5] = Game.GetFormFromFile(0x01676D, "Skyrim.esm") as Location
+	HoldLocations[6] = Game.GetFormFromFile(0x01676F, "Skyrim.esm") as Location
+	HoldLocations[7] = Game.GetFormFromFile(0x01676E, "Skyrim.esm") as Location
+	HoldLocations[8] = Game.GetFormFromFile(0x01676B, "Skyrim.esm") as Location
+	CrimeFactions = new Faction[9]
+	CrimeFactions[0] = Game.GetFormFromFile(0x0267EA, "Skyrim.esm") as Faction
+	CrimeFactions[1] = Game.GetFormFromFile(0x0267E3, "Skyrim.esm") as Faction
+	CrimeFactions[2] = Game.GetFormFromFile(0x02816B, "Skyrim.esm") as Faction
+	CrimeFactions[3] = Game.GetFormFromFile(0x029DB0, "Skyrim.esm") as Faction
+	CrimeFactions[4] = Game.GetFormFromFile(0x02816C, "Skyrim.esm") as Faction
+	CrimeFactions[5] = Game.GetFormFromFile(0x02816E, "Skyrim.esm") as Faction
+	CrimeFactions[6] = Game.GetFormFromFile(0x028170, "Skyrim.esm") as Faction
+	CrimeFactions[7] = Game.GetFormFromFile(0x02816D, "Skyrim.esm") as Faction
+	CrimeFactions[8] = Game.GetFormFromFile(0x02816F, "Skyrim.esm") as Faction
+	swornWordReady = True
+EndFunction
+
+Function ReadLedger()
+	InitSwornWord()
+	If !LedgerQuest.IsRunning()
+		LedgerQuest.Start()
+	EndIf
+	; Refresh longest even when no further tier update is scheduled.
+	Int i = 0
+	While i < OATH_COUNT
+		If active[i]
+			UpdateLongest(Utility.GetCurrentGameTime() - swornAt[i])
+		EndIf
+		i += 1
+	EndWhile
+	LedgerQuest.UpdateCurrentInstanceGlobal(SOT_OathsKept)
+	LedgerQuest.UpdateCurrentInstanceGlobal(SOT_OathsBroken)
+	LedgerQuest.UpdateCurrentInstanceGlobal(SOT_LongestOathDays)
+	Int net = SOT_OathsKept.GetValueInt() - SOT_OathsBroken.GetValueInt()
+	Int title = 1
+	If net <= -2
+		title = 0
+	ElseIf net >= 6
+		title = 4
+	ElseIf net >= 3
+		title = 3
+	ElseIf net >= 1
+		title = 2
+	EndIf
+	LedgerMessages[title].Show()
+EndFunction
+
+Function RewardToken()
+	Int kept = SOT_OathsKept.GetValueInt()
+	Int rank = 0
+	If kept >= 10
+		rank = 3
+	ElseIf kept >= 6
+		rank = 2
+	ElseIf kept >= 3
+		rank = 1
+	EndIf
+	ReplaceToken(Tokens[rank], kept == 1)
+EndFunction
+
+; Lost or sold charms are not replaced. A carried struck charm is restored
+; on the next kept oath. Preserve equipment only when a charm was worn.
+Function ReplaceToken(Armor akNew, Bool abFirst)
+	Actor player = Game.GetPlayer()
+	Bool held = False
+	Bool worn = False
+	Int i = 0
+	While i < Tokens.Length
+		If Tokens[i] != akNew && player.GetItemCount(Tokens[i]) > 0
+			held = True
+			If player.IsEquipped(Tokens[i])
+				worn = True
+			EndIf
+			player.RemoveItem(Tokens[i], player.GetItemCount(Tokens[i]), True)
+		EndIf
+		i += 1
+	EndWhile
+	If SOT_TokenStruck != akNew && player.GetItemCount(SOT_TokenStruck) > 0
+		held = True
+		If player.IsEquipped(SOT_TokenStruck)
+			worn = True
+		EndIf
+		player.RemoveItem(SOT_TokenStruck, player.GetItemCount(SOT_TokenStruck), True)
+	EndIf
+	If held || abFirst
+		If player.GetItemCount(akNew) == 0
+			player.AddItem(akNew, 1, False)
+		EndIf
+		If worn
+			player.EquipItem(akNew, False, True)
+		EndIf
+	EndIf
+EndFunction
+
+Function WrongedHold()
+	If SOT_BountyEnabled.GetValueInt() == 0
+		Return
+	EndIf
+	Location here = Game.GetPlayer().GetCurrentLocation()
+	If !here
+		Return
+	EndIf
+	Int i = 0
+	While i < HoldLocations.Length
+		; IsChild asks whether THIS location descends from the supplied hold.
+		If here == HoldLocations[i] || here.IsChild(HoldLocations[i])
+			CrimeFactions[i].ModCrimeGold(SOT_BountyGold.GetValueInt(), False)
+			Debug.Notification("Word travels. " + HoldName(i) + " has put a price on you.")
+			Return
+		EndIf
+		i += 1
+	EndWhile
+EndFunction
+
+String Function HoldName(Int i)
+	If i == 0
+		Return "Whiterun"
+	ElseIf i == 1
+		Return "Eastmarch"
+	ElseIf i == 2
+		Return "the Rift"
+	ElseIf i == 3
+		Return "Haafingar"
+	ElseIf i == 4
+		Return "the Reach"
+	ElseIf i == 5
+		Return "the Pale"
+	ElseIf i == 6
+		Return "Falkreath"
+	ElseIf i == 7
+		Return "Hjaalmarch"
+	EndIf
+	Return "Winterhold"
 EndFunction

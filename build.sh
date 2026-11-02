@@ -39,6 +39,8 @@ dotnet run --project src/plugin/SteelOath.Generator -c Release -- \
   --out "$BUILD/plugin" --ids src/plugin/formids.json --papyrus src/papyrus
 python3 "$KIT/esp_check.py" "$BUILD/plugin/$NAME.esp"
 cp "$BUILD/plugin/$NAME.esp" "$STAGE/00 Core/"
+mkdir -p "$STAGE/00 Core/Sound/fx/SteelOath"
+cp src/sound/*.wav "$STAGE/00 Core/Sound/fx/SteelOath/"
 
 echo "== FOMOD"
 ARCHIVE="$DIST_DIR/$NAME-$VERSION.zip"

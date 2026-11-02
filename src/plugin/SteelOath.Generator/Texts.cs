@@ -29,6 +29,14 @@ internal static class Texts
             new[] { new Stat("SOT_FortOneHanded", "One-Handed", new[] { 10f, 20f, 30f }), new Stat("SOT_FortTwoHanded", "Two-Handed", new[] { 10f, 20f, 30f }) }),
     };
 
+    public static readonly string[] NameTitles =
+    {
+        "Oathbreaker", "No name yet", "Keeps their word", "A name in the holds", "Their word is good steel",
+    };
+
+    public const string Ledger =
+        "THE LEDGER\n\nOaths kept: <Global=SOT_OathsKept>\nOaths broken: <Global=SOT_OathsBroken>\nLongest oath: <Global=SOT_LongestOathDays> days\n\n";
+
     public const string Intro =
         "You feel the weight of old vows settle on your shoulders. The warriors of the old songs swore oaths, and kept them.\n\n(New lesser power: Swear an Oath.)";
 

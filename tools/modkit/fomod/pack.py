@@ -40,7 +40,17 @@ def validate(fomod_dir, stage):
         else:
             print("[fomod] ModuleConfig.xml validates against the FOMOD schema")
     else:
-        print("[fomod] WARN xmllint not found, schema validation skipped")
+        try:
+            from lxml import etree
+        except ImportError:
+            print("[fomod] WARN xmllint and lxml not found, schema validation skipped")
+        else:
+            schema = etree.XMLSchema(etree.parse(SCHEMA))
+            document = etree.parse(mc)
+            if not schema.validate(document):
+                errors.append("schema: " + str(schema.error_log))
+            else:
+                print("[fomod] ModuleConfig.xml validates against the FOMOD schema (lxml)")
     root = ET.parse(mc).getroot()
     for el in root.iter():
         if el.tag in ("file", "folder") and "source" in el.attrib:

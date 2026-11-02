@@ -1,6 +1,6 @@
-# In-game test checklist (v0.1.2, early beta)
+# In-game test checklist (v0.2.0, early beta)
 
-v0.1.2 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
+v0.2.0 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
 
 Open the console with `~`. Commands that take a quest or global accept the EditorID directly. `player.addspell` needs a full FormID, which depends on your load order, so look it up first:
 
@@ -42,7 +42,7 @@ Tip: to fast-forward game time, `set timescale to 2000` for a few seconds, then 
 - [ ] With the other mods in the series installed, all plugins load.
 
 ## 1. Menus
-- [ ] Cast the power. The menu shows active 0 / 3, broken 0, longest 0 days, and *Swear an oath / My oaths / Close*. *Renounce* is hidden.
+- [ ] Cast the power. The menu shows active 0 / 3, broken 0, longest 0 days, and *Swear an oath / My oaths / Read the ledger / Close*. *Renounce* is hidden.
 - [ ] *Swear an oath* lists all five oaths and *Back*. Each opens a confirmation with the vow and blessing (days filled in as 3 and 7). *Back* returns.
 - [ ] *My oaths* says "You hold no oaths."
 
@@ -87,3 +87,33 @@ set SOT_MaxOaths to 3
 stopquest SOT_OathQuest           (then startquest SOT_OathQuest: resets all oath state;
                                    remove leftover blessings with player.removespell)
 ```
+
+
+## 8. Kept words and ledger
+- [ ] On a fresh save, Read the ledger shows kept 0, broken 0, longest 0 and “No name yet”. All numbers render, with no literal Global tags.
+- [ ] With tier days 0.1 / 0.2, reach Unbroken: kept increments once. Wait longer, reopen the menu, save/reload: no extra credit. Renounce, wait cooldown, swear again and reach Unbroken: exactly one more credit.
+- [ ] Wait directly past both tiers: one kept credit. Keep three simultaneous oaths: one credit per oath.
+- [ ] Breaking or renouncing before Unbroken gives no kept credit. Breaking after Unbroken leaves the earned count intact.
+- [ ] For title boundaries, set kept/broken to produce net −3, −2, −1, 0, 1, 2, 3, 5, 6, 7. Reopen the ledger each time; compare the DESIGN title table. Restore real counts afterwards.
+- [ ] Hold an Unbroken oath for further whole days and read the ledger: longest updates even with no further tier timer.
+- [ ] Upgrade a 0.1.1 save: existing blessings remain, new transitions count once, already Unbroken oaths do not gain retroactive credit. Open the ledger before and after a reload; all three numbers resolve. Test swearing, breaking in a nested hold location, bounty, sounds, and the first token award without restarting the controller quest.
+
+## 9. Tokens
+Use a disposable save and short tier/cooldown tunables. To reach boundaries quickly,
+set kept to one below the boundary, then keep a newly sworn oath (console count edits
+alone do not award tokens).
+- [ ] First kept oath: one Sellsword's Token appears with an inventory notification; it is not auto-equipped. Inspect, drop and pick it up: vanilla necklace model is visible.
+- [ ] Equip it: amulet slot, Speechcraft +5. Another necklace replaces it normally.
+- [ ] Reach kept 3, 6, 10: old token is removed, correct token added, Speechcraft +10/+15/+20. Test worn and unworn upgrades; only worn upgrades re-equip.
+- [ ] Break with each token carried: Struck Token replaces it; if worn, remains worn with Speechcraft −10. Repeated breaks never duplicate it.
+- [ ] Keep another oath: struck becomes the proper tier for current kept, with worn state preserved. Repeat restoration below and across a tier boundary.
+- [ ] Sell a token to a jewelry merchant without the Merchant perk. Store, sell or drop the token, then keep/break: no replacement appears and stored token is untouched.
+- [ ] Renounce with a token: no strike or other token changes.
+
+## 10. Wronged holds and motif
+- [ ] In each of the nine holds, note its current non-violent bounty, swear then break an oath. Only that hold gains 100; notification names the hold. Test a city interior and a nested dungeon as well as outdoors.
+- [ ] Test a location outside the nine holds (and a location-less test cell): no bounty and no hold notification.
+- [ ] Set bounty gold to 25: next break adds 25. Set enabled to 0: no bounty/hold notification, but token strike, broken count and penalty still happen. Restore defaults 100 / 1.
+- [ ] Renounce: no bounty, strike or break sound. Failed swearing: no swear sound.
+- [ ] Successful swear plays the swear motif once; actual break plays the break motif once. Listen for clipping or excessive volume alongside normal SFX; test with SFX volume reduced.
+- [ ] Inspect installed archive: both WAVs under `00 Core/Sound/fx/SteelOath/`, installed by required core. Save/reload with a worn struck token: effect persists and next kept oath restores it.

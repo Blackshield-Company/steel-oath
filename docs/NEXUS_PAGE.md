@@ -1,17 +1,19 @@
 # Nexus Mods page: Steel Oath
 
-Early beta: v0.1.2 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.2.0 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+
+The upload values and build archive target v0.2.0.
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** Steel Oath
-- **Version:** 0.1.2 (early beta)
+- **Version:** 0.2.0 (early beta)
 - **Category:** Gameplay
 - **Suggested tags:** Gameplay, Lore-Friendly, Combat, Roleplay, Powers, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT, so allow modification and conversions with credit. Don't allow re-uploads of the archive itself.
-- **File to upload:** `SteelOath-0.1.2.zip` (FOMOD), main file, named "Steel Oath".
+- **File to upload:** `SteelOath-0.2.0.zip` (FOMOD), main file, named "Steel Oath".
 
 ## Description (paste into the BBCode editor)
 
@@ -19,7 +21,7 @@ Early beta: v0.1.2 passed every automated build check but hasn't been playtested
 [center][size=6][b]STEEL OATH[/b][/size]
 [size=3][i]Swear it. Keep it. The longer it holds, the stronger you become.[/i][/size]
 
-[size=3][color=#e0a030][b]EARLY BETA (v0.1.2)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
+[size=3][color=#e0a030][b]EARLY BETA (v0.2.0)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
 
 [line]
 
@@ -41,6 +43,9 @@ After Helgen you gain a lesser power, [b]Swear an Oath[/b]. Pick a warrior's vow
 [*][b]Blessings grow[/b]: Sworn when you take the oath, Steadfast after 3 in-game days, Unbroken after 7.
 [*][b]Breaking an oath[/b]: blessing gone, [b]Oathbreaker[/b] (Health and Stamina −30) for 24 hours, and a 72-hour wait before you can swear that oath again.
 [*][b]Renouncing[/b] an oath from the menu costs only the wait, not the penalty.
+[*][b]Read the ledger[/b] shows kept and broken words, longest oath and an earned name. Each swearing counts once on first reaching Unbroken.
+[*]Your first kept oath awards an amulet: Speechcraft +5 / +10 / +15 / +20 at 1 / 3 / 6 / 10 kept words. Carried tokens upgrade; breaking strikes them with Speechcraft -10 until another oath is kept. Lost or sold tokens are not replaced.
+[*]Breaking in a Skyrim hold adds 100 non-violent bounty there. Renouncing adds none. Original sounds mark swearing and breaking.
 [*][b]My oaths[/b] shows how long each oath has held, when the next blessing comes, and any cooldowns.
 [*]Event-driven scripts with no polling loops: the mod only wakes up when you cast, equip or unequip something, or when a blessing or penalty is due.
 [/list]
@@ -70,7 +75,7 @@ As with any scripted mod, don't remove it mid-playthrough. If you must, renounce
 [*]Only vows the game can detect are offered. Mercy, honesty or "never flee" can't be checked from vanilla scripts, so they're left out on purpose.
 [*]The Oath of Steel counts every hand-cast spell. Telling spell schools apart would need SKSE.
 [*]Werewolf form doesn't break the Oath of the Shield. Re-equip your shield after changing back.
-[*]Settings are console globals for now: [code]set SOT_MaxOaths to 3 / set SOT_Tier2Days to 3 / set SOT_Tier3Days to 7 / set SOT_PenaltyHours to 24 / set SOT_CooldownHours to 72[/code]
+[*]Settings are console globals for now: [code]set SOT_BountyEnabled to 1 / set SOT_BountyGold to 100 / set SOT_MaxOaths to 3 / set SOT_Tier2Days to 3 / set SOT_Tier3Days to 7 / set SOT_PenaltyHours to 24 / set SOT_CooldownHours to 72[/code]
 [/list]
 
 [size=4][b]Roadmap[/b][/size]

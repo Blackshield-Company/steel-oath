@@ -4,7 +4,7 @@
 
 A Skyrim Special Edition mod about warrior's vows. Swear an oath through a lesser power, and keep it: the longer it holds, the stronger its blessing grows. Break it and you're marked as an oathbreaker for a day, and the oath won't take you back for three.
 
-**Status: v0.1.2, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
+**Status: v0.2.0, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
 
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
@@ -29,6 +29,19 @@ Every vow is something the game reports to scripts without SKSE, so the mod can 
 - **Renouncing** an oath from the menu ends it without the penalty, but the cooldown still applies.
 - The menu's *My oaths* shows how long each oath has held, when the next blessing comes, cooldowns and any time left as an oathbreaker.
 
+## The sworn word
+
+Your word is the only thing you own. Keeping it builds a name; breaking it follows you.
+
+| Feature | Behaviour |
+|---|---|
+| Kept words | Each swearing counts once when it first reaches Unbroken. |
+| Read the ledger | The main menu shows kept and broken counts, longest days and a name earned from kept minus broken. |
+| Sellsword's Token | First kept oath gives an amulet. At 1 / 3 / 6 / 10 kept oaths it grants Speechcraft +5 / +10 / +15 / +20. Carried tokens upgrade and stay equipped if worn. |
+| Struck Token | Breaking while carrying a token replaces it with Speechcraft −10. Keeping the next oath restores the appropriate tier. Lost or sold tokens are not replaced. |
+| Wronged hold | Breaking in a Skyrim hold adds 100 non-violent bounty there. Renouncing adds none. |
+| Sound motif | Original short sounds mark swearing and breaking. |
+
 ## Install
 
 Grab `SteelOath-<version>.zip` from [Releases](https://github.com/Blackshield-Company/steel-oath/releases) (FOMOD installer).
@@ -42,6 +55,8 @@ Safe to add to an existing save: the power arrives within a minute of loading (a
 ## Console tunables
 
 ```
+set SOT_BountyEnabled to 1     (0 disables wronged-hold bounties)
+set SOT_BountyGold to 100      (non-violent bounty per broken oath)
 set SOT_MaxOaths to 3          (oaths held at once)
 set SOT_Tier2Days to 3         (days to Steadfast)
 set SOT_Tier3Days to 7         (days to Unbroken)
@@ -61,6 +76,7 @@ Changes to the day and hour values apply to oaths sworn or broken after the chan
 
 ```
 src/papyrus/      Papyrus sources (.psc)
+src/sound/        Original oath sound motifs
 src/plugin/       Mutagen plugin generator + pinned FormIDs
 fomod/            FOMOD installer config
 docs/             Testing checklist, design notes, Nexus page and upload fields
@@ -68,16 +84,10 @@ tools/modkit/     Shared tooling for the mod series
 build.sh          One-command build
 ```
 
-## Support
-
-Donations are optional. Nothing in the mod is gated on them.
-
-- GitHub Sponsors: https://github.com/sponsors/synthalorian
-- Ko-fi: https://ko-fi.com/synthalorian
-
 ## Credits and licenses
 
 - Code in this repo: MIT (see `LICENSE`).
+- Original sound motifs in `src/sound/`: CC0; regenerate with `tools/sound/make_sounds.py` (requires numpy).
 - [Mutagen](https://github.com/Mutagen-Modding/Mutagen) by Noggog and contributors (GPL-3.0), used as a build tool, not redistributed.
 - [papyrus-compiler](https://github.com/russo-2025/papyrus-compiler) by russo-2025 (MIT), downloaded at build time.
 - FOMOD schema from [GandaG/fomod-schema](https://github.com/GandaG/fomod-schema) (MIT).

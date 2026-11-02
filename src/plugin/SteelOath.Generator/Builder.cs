@@ -34,6 +34,7 @@ internal sealed class Builder
     public void Build()
     {
         var questOath = Id("SOT_OathQuest");
+        var questLedger = Id("SOT_LedgerQuest");
         var oaths = Texts.Oaths;
 
         // --- Globals ---------------------------------------------------------------------------
@@ -43,6 +44,9 @@ internal sealed class Builder
         var gActiveCount = Global("SOT_ActiveCount", 0);
         var gCanSwear = Global("SOT_CanSwear", 1);
         var gMax = Global("SOT_MaxOaths", 3);
+        var gKept = Global("SOT_OathsKept", 0);
+        var gBountyEnabled = Global("SOT_BountyEnabled", 1);
+        var gBountyGold = Global("SOT_BountyGold", 100);
         var gBroken = Global("SOT_OathsBroken", 0);
         var gLongest = Global("SOT_LongestOathDays", 0);
         var gTier2 = Global("SOT_Tier2Days", 3);
@@ -112,12 +116,30 @@ internal sealed class Builder
         abBreaker.Effects.Add(Effect(dmgStamina, 30, 0));
         Add(abBreaker);
 
+        // --- The sworn word ---------------------------------------------------------------------
+        var tokens = new[]
+        {
+            Token("SOT_Token1", "Sellsword's Token", 5, false),
+            Token("SOT_Token2", "Twice-Stitched Token", 10, false),
+            Token("SOT_Token3", "Thrice-Stitched Token", 15, false),
+            Token("SOT_Token4", "Oath-Heavy Token", 20, false),
+        };
+        var struck = Token("SOT_TokenStruck", "Struck Token", 10, true);
+        var swearSound = Sound("SOT_SwearSound", "sot_swear.wav");
+        var breakSound = Sound("SOT_BreakSound", "sot_break.wav");
+        var ledger = Texts.NameTitles.Select((title, i) => Msg($"SOT_MsgLedger{i}",
+            Texts.Ledger + title,
+            Btn("Close"))).ToArray();
+        foreach (var message in ledger)
+            _mod.Messages[message].Quest.SetTo(questLedger);
+
         // --- Messages ----------------------------------------------------------------------------
         var msgIntro = Msg("SOT_MsgIntro", Texts.Intro);
         var msgMain = Msg("SOT_MsgMainMenu", Texts.MainMenu,
             Btn("Swear an oath", Cond.Global(gCanSwear, CompareOperator.EqualTo, 1)),
             Btn("Renounce an oath", Cond.Global(gActiveCount, CompareOperator.GreaterThan, 0)),
             Btn("My oaths"),
+            Btn("Read the ledger"),
             Btn("Close"));
         var swearButtons = oaths.Select((o, i) => Btn(o.Name, Cond.Global(gAvailable[i], CompareOperator.EqualTo, 1))).ToList();
         swearButtons.Add(Btn("Back"));
@@ -142,11 +164,23 @@ internal sealed class Builder
             ID = AliasPlayer, Type = QuestAlias.TypeEnum.Reference, Name = "Player",
             ForcedReference = new FormLinkNullable<IPlacedGetter>(PlayerRef),
         });
+        // A fresh quest instance supplies text globals even in saves with the old controller.
+        var ledgerQuest = Add(new Quest(questLedger, R)
+        {
+            EditorID = "SOT_LedgerQuest", Name = "Steel Oath Ledger",
+            QuestFormVersion = VanillaQuestFormVersion,
+        });
         quest.NextAliasID = (uint)quest.Aliases.Count;
         quest.VirtualMachineAdapter = Vmad.QuestAdapter(Vmad.Script("SOT_OathScript",
                 Vmad.Obj("SOT_PowerGranted", gGranted),
                 Vmad.ObjList("ActiveFlags", gActive), Vmad.ObjList("AvailableFlags", gAvailable),
                 Vmad.Obj("SOT_ActiveCount", gActiveCount), Vmad.Obj("SOT_CanSwear", gCanSwear), Vmad.Obj("SOT_MaxOaths", gMax),
+                Vmad.Obj("SOT_OathsKept", gKept),
+                Vmad.Obj("SOT_BountyEnabled", gBountyEnabled), Vmad.Obj("SOT_BountyGold", gBountyGold),
+                Vmad.ObjList("Tokens", tokens), Vmad.Obj("SOT_TokenStruck", struck),
+                Vmad.ObjList("HoldLocations", HoldLocations), Vmad.ObjList("CrimeFactions", CrimeFactions),
+                Vmad.Obj("SOT_SwearSound", swearSound), Vmad.Obj("SOT_BreakSound", breakSound),
+                Vmad.ObjList("LedgerMessages", ledger), Vmad.Obj("LedgerQuest", ledgerQuest.FormKey),
                 Vmad.Obj("SOT_OathsBroken", gBroken), Vmad.Obj("SOT_LongestOathDays", gLongest),
                 Vmad.Obj("SOT_Tier2Days", gTier2), Vmad.Obj("SOT_Tier3Days", gTier3),
                 Vmad.Obj("SOT_CooldownHours", gCooldown), Vmad.Obj("SOT_PenaltyHours", gPenalty),
@@ -166,6 +200,48 @@ internal sealed class Builder
     // ----------------------------------------------------------------------------------------
     // Record helpers
     // ----------------------------------------------------------------------------------------
+
+    private FormKey Token(string edid, string name, float magnitude, bool struck)
+    {
+        var effect = ValueEffect(edid + "Effect", name, ActorValue.Speech, struck,
+            struck ? "Speechcraft is reduced by <mag> points." : "Speechcraft is increased by <mag> points.");
+        var enchantment = Add(new ObjectEffect(Id(edid + "Enchantment"), R)
+        {
+            EditorID = edid + "Enchantment", Name = name,
+            CastType = CastType.ConstantEffect, TargetType = TargetType.Self,
+            EnchantType = ObjectEffect.EnchantTypeEnum.Enchantment,
+            Effects = { Effect(effect, magnitude, 0) },
+        });
+        return Add(new Armor(Id(edid), R)
+        {
+            EditorID = edid, Name = name,
+            BodyTemplate = new BodyTemplate { FirstPersonFlags = BipedObjectFlag.Amulet, ArmorType = ArmorType.Clothing },
+            WorldModel = new GenderedItem<ArmorModel?>(
+                new ArmorModel { Model = new Model { File = GoldAmuletGroundModel } },
+                new ArmorModel { Model = new Model { File = GoldAmuletGroundModel } }),
+            Armature = { L<IArmorAddonGetter>(GoldAmuletAA) },
+            Keywords = new() { L<IKeywordGetter>(ClothingNecklace), L<IKeywordGetter>(VendorItemJewelry) },
+            ObjectEffect = L<IObjectEffectGetter>(enchantment.FormKey).AsNullable(),
+            Race = L<IRaceGetter>(DefaultRace).AsNullable(),
+            Weight = 0.5f, Value = 25,
+        }).FormKey;
+    }
+
+    private FormKey Sound(string edid, string file)
+    {
+        var descriptor = Add(new SoundDescriptor(Id(edid + "Desc"), R)
+        {
+            EditorID = edid + "Desc", Type = SoundDescriptor.DescriptorType.Standard,
+            Category = L<ISoundCategoryGetter>(AudioCategorySFX).AsNullable(),
+            OutputModel = L<ISoundOutputModelGetter>(SOMMono01400).AsNullable(),
+            LoopAndRumble = new SoundLoopAndRumble(), Priority = 128,
+        });
+        descriptor.SoundFiles.Add(new Mutagen.Bethesda.Plugins.Assets.AssetLink<Mutagen.Bethesda.Skyrim.Assets.SkyrimSoundAssetType>(@"fx\SteelOath\" + file));
+        return Add(new SoundMarker(Id(edid), R)
+        {
+            EditorID = edid, SoundDescriptor = L<ISoundDescriptorGetter>(descriptor.FormKey).AsNullable(),
+        }).FormKey;
+    }
 
     private T Add<T>(T record) where T : SkyrimMajorRecord
     {
