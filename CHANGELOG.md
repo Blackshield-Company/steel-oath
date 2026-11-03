@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-11-03
+
+Early beta, not yet playtested in game.
+
+### Fixed
+- Wronged hold: breaking an oath in a city, town, dungeon or other location inside a hold now adds the bounty in that hold. The hold check asked the location relationship the wrong way round, so only breaks standing directly in the hold's top-level location were counted.
+- Save-compatible: no scripts, properties or records were renamed, and FormIDs are unchanged.
+
 ## [0.2.0] - 2026-11-02
 
 Early beta, not yet playtested in game.

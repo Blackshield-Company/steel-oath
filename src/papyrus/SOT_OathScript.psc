@@ -697,8 +697,9 @@ Function WrongedHold()
 	EndIf
 	Int i = 0
 	While i < HoldLocations.Length
-		; IsChild asks whether THIS location descends from the supplied hold.
-		If here == HoldLocations[i] || here.IsChild(HoldLocations[i])
+		; IsChild asks whether the supplied location descends from THIS one, so ask the hold
+		; whether the player's current location is one of its children.
+		If here == HoldLocations[i] || HoldLocations[i].IsChild(here)
 			CrimeFactions[i].ModCrimeGold(SOT_BountyGold.GetValueInt(), False)
 			Debug.Notification("Word travels. " + HoldName(i) + " has put a price on you.")
 			Return
