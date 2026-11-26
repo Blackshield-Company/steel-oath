@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2026-11-26
+
+### Fixed
+- The five oath tokens used `Clothes\AmuletsandRings\GoldAmuletGND.nif` as their world model. That folder is not used for base-game amulets, and the filename `GoldAmuletGND.nif` is not in the game. They now use `Armor\AmuletsandRings\GoldAmuletGO.nif`, the vanilla gold amulet ground model (the same path as the unenchanted gold necklace). No FormIDs changed.
+
 ## [0.2.1] - 2026-11-03
 
 Early beta, not yet playtested in game.

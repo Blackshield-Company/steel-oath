@@ -42,5 +42,5 @@ internal static class Vanilla
     public static readonly FormKey GoldAmuletAA = K(0x091722);
     public static readonly FormKey SOMMono01400 = K(0x05A28A);
     public static readonly FormKey AudioCategorySFX = K(0x0172A1);
-    public const string GoldAmuletGroundModel = @"Clothes\AmuletsandRings\GoldAmuletGND.nif";
+    public const string GoldAmuletGroundModel = @"Armor\AmuletsandRings\GoldAmuletGO.nif";
 }
