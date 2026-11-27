@@ -496,10 +496,29 @@ EndFunction
 ; Helpers
 ; ---------------------------------------------------------------------------
 
-; 0.1.1: Kindred Judgment (Dawnguard DLC1VQ08) needs Auriel's Bow to break Harkon's blood shield.
-; Auriel's Bow does not break the Oath of Close Quarters while that quest is at stage 40 to 199.
-; Without Dawnguard both lookups return None and nothing is exempt.
+; Bows that do not break the Oath of Close Quarters. All lookups use
+; Game.GetFormFromFile, so the plugin keeps Skyrim.esm as its only master.
+; Without the DLC a lookup returns None and that exemption is skipped.
+;
+; 0.1.1: Kindred Judgment (Dawnguard DLC1VQ08) needs Auriel's Bow to break
+; Harkon's blood shield. Auriel's Bow is exempt while that quest is at
+; stage 40 to 199.
+;
+; 0.2.3: any bow is exempt while the player stands in a place whose puzzle
+; or course needs one (suggested by jmalm123):
+;   - Arkngthamz (DLC1ArkngthamzLocation) and the Aetherium Forge
+;     (DLC1BthalftAetheriumForgeLocation), while Lost to the Ages (DLC1LD)
+;     or its Arkngthamz quest (DLC1LD_Arkngthamz) is running.
+;   - Dead Drop Falls (DLC1DeadDropFallsLocation, the cave under Fort
+;     Dawnguard), always.
+;   - Fahlbtharz on Solstheim (DLC2FahlbtharzLocation), always.
 Bool Function IsExemptBow(Form akWeapon)
+	If !akWeapon
+		Return False
+	EndIf
+	If InBowZone()
+		Return True
+	EndIf
 	Form auriel = Game.GetFormFromFile(0x000800, "Dawnguard.esm")
 	If !auriel || akWeapon != auriel
 		Return False
@@ -510,6 +529,49 @@ Bool Function IsExemptBow(Form akWeapon)
 	EndIf
 	Int st = kj.GetStage()
 	Return st >= 40 && st < 200
+EndFunction
+
+; True when the player is somewhere a bow is needed (see IsExemptBow).
+Bool Function InBowZone()
+	If PlayerIn(0x019C8E, "Dawnguard.esm") ; DLC1DeadDropFallsLocation
+		Return True
+	EndIf
+	If PlayerIn(0x0142A0, "Dragonborn.esm") ; DLC2FahlbtharzLocation
+		Return True
+	EndIf
+	If QuestRunning(0x005817, "Dawnguard.esm") || QuestRunning(0x004D6B, "Dawnguard.esm") ; DLC1LD, DLC1LD_Arkngthamz
+		If PlayerIn(0x004D6D, "Dawnguard.esm") ; DLC1ArkngthamzLocation
+			Return True
+		EndIf
+		If PlayerIn(0x005826, "Dawnguard.esm") ; DLC1BthalftAetheriumForgeLocation
+			Return True
+		EndIf
+	EndIf
+	Return False
+EndFunction
+
+Bool Function PlayerIn(Int aiFormID, String asFile)
+	Location loc = Game.GetFormFromFile(aiFormID, asFile) as Location
+	Return loc && Game.GetPlayer().IsInLocation(loc)
+EndFunction
+
+Bool Function QuestRunning(Int aiFormID, String asFile)
+	Quest q = Game.GetFormFromFile(aiFormID, asFile) as Quest
+	Return q && q.IsRunning()
+EndFunction
+
+; 0.2.3: a bow taken up inside an exempt place is put away, not judged, when
+; the player leaves it. Leaving with the bow in hand doesn't break the oath.
+Function OnPlayerLocationChange()
+	If !IsActive(OATH_CLOSE)
+		Return
+	EndIf
+	Actor player = Game.GetPlayer()
+	Weapon w = player.GetEquippedWeapon(False)
+	If w && w.HasKeyword(WeapTypeBow) && !IsExemptBow(w)
+		player.UnequipItem(w, False, True)
+		Debug.Notification("Your oath allows no bow here. You put it away.")
+	EndIf
 EndFunction
 
 Bool Function IsActive(Int i)

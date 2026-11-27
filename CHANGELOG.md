@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.2.3] - 2026-11-26
+
+Early beta, not yet playtested in game.
+
+### Added
+- Oath of Close Quarters bow exemptions for places that need a bow, thanks to jmalm123 for the suggestion:
+  - Arkngthamz and the Aetherium Forge, while Lost to the Ages is running (the resonator puzzles).
+  - Dead Drop Falls, the cave under Fort Dawnguard (the obstacle course).
+  - Fahlbtharz on Solstheim (the dwarven resonators).
+- Leaving one of those places with a bow still equipped puts the bow away with a notification. It doesn't break the oath.
+
+### Changed
+- Swearing the Oath of Close Quarters is allowed with a bow equipped inside an exempt place.
+- Still no SKSE and still ESL with Skyrim.esm as its only master. The DLC places are looked up at runtime, so without Dawnguard or Dragonborn those exemptions simply don't apply.
+- Save-compatible: no records, properties or FormIDs changed. Only the two scripts changed.
+
 ## [0.2.2] - 2026-11-26
 
 ### Fixed
