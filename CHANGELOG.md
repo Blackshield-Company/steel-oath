@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- The FOMOD now installs its Data folders in lowercase (`scripts/`, `seq/`, `sound/`, `sound/voice/`). The game opens them by their lowercase names. On Linux (Proton), a Data folder that also holds a capitalised copy of one of them from another mod is read only from the exact-case folder, so the compiled scripts, the SEQ file or the voice files could go unread. Nothing changes on Windows, where folder case does not matter. No FormIDs changed.
+
 ## [0.2.2] - 2026-11-26
 
 ### Fixed
