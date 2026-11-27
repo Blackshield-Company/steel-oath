@@ -1,6 +1,6 @@
 Scriptname SOT_PlayerAliasScript extends ReferenceAlias
 {Steel Oath - on the controller quest's Player alias. Forwards the player's
-spell casts and equipment changes to the controller, which checks them
+spell casts, equipment changes and location changes to the controller, which checks them
 against the oaths currently sworn. Event-driven: nothing polls.}
 
 SOT_OathScript Property Oaths Auto
@@ -15,4 +15,8 @@ EndEvent
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 	Oaths.OnPlayerUnequipped(akBaseObject)
+EndEvent
+
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+	Oaths.OnPlayerLocationChange()
 EndEvent

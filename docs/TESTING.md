@@ -1,6 +1,6 @@
-# In-game test checklist (v0.2.2, early beta)
+# In-game test checklist (v0.2.3, early beta)
 
-v0.2.2 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
+v0.2.3 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
 
 Open the console with `~`. Commands that take a quest or global accept the EditorID directly. `player.addspell` needs a full FormID, which depends on your load order, so look it up first:
 
@@ -61,6 +61,7 @@ For each: confirm the "Oath broken: …" notification, the blessing disappears f
 - [ ] **Iron**: put on a light armor piece → broken. Heavy pieces and clothes don't.
 - [ ] **Endurance**: drink a potion or eat food in combat → broken. Outside combat, nothing happens. Also try applying a poison in combat and report whether it broke the oath.
 - [ ] **Close Quarters**: equip a bow → broken. Swords, axes, daggers and staves don't.
+- [ ] **Close Quarters exemptions (0.2.3, needs Dawnguard/Dragonborn)**: with Lost to the Ages running, equip a bow inside Arkngthamz and at the Aetherium Forge → not broken. Equip a bow in Dead Drop Falls and in Fahlbtharz → not broken. Walk out of any of them with the bow equipped → the bow is put away with a notification, and the oath stays sworn. Equip a bow just outside → broken.
 
 ## 4. Growth, penalty, cooldown
 - [ ] `set SOT_Tier2Days to 0.1` and `set SOT_Tier3Days to 0.2`, swear an oath, then wait 3 hours. "The blessing grows: Steadfast" appears and the Active Effects entry updates. Wait 2 more hours: Unbroken. (Set them back to 3 and 7 afterwards.)
