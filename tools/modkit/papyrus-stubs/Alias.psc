@@ -4,3 +4,4 @@ Event OnInit()
 EndEvent
 Event OnUpdate()
 EndEvent
+Function RegisterForSingleUpdate(Float afInterval) native

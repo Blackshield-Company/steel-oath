@@ -49,6 +49,10 @@ Message Property SOT_MsgMainMenu Auto
 Message Property SOT_MsgSwearMenu Auto
 Message Property SOT_MsgRenounceMenu Auto
 Message[] Property ConfirmMessages Auto
+; 0.3.0: "are you sure?" before an equip breaks an oath. Index 0 Steel, 1 Iron, 2 Close Quarters.
+; Old saves hold None in these until InitConfirm() fills them from the plugin.
+GlobalVariable Property SOT_ConfirmBreak Auto
+Message[] Property BreakMessages Auto
 
 ; A single real line-feed character (0x0A), filled by the plugin generator.
 ; Papyrus string literals cannot hold one, and the build compiler does not expand
@@ -74,6 +78,13 @@ Float breakerUntil = 0.0
 Int activeCount = 0
 Bool shieldCheckPending = False
 Bool swornWordReady = False
+Bool confirmReady = False
+Cell[] exemptCells
+Bool exemptReady = False
+; The last weapon or armor the player took off, and when (real seconds), so a cancelled
+; equip can put back what it replaced.
+Form lastOff = None
+Float lastOffAt = -100.0
 
 ; ---------------------------------------------------------------------------
 ; Startup: grant the power once the player is past Helgen
@@ -148,6 +159,16 @@ Function OpenMenu()
 			keepOpen = False
 		ElseIf choice == 3
 			ReadLedger()
+			keepOpen = False
+		ElseIf choice == 4 || choice == 5
+			InitConfirm()
+			If choice == 4
+				SOT_ConfirmBreak.SetValueInt(0)
+				Debug.Notification("Steel Oath will no longer ask before an oath breaks.")
+			Else
+				SOT_ConfirmBreak.SetValueInt(1)
+				Debug.Notification("Steel Oath will ask before an oath breaks.")
+			EndIf
 			keepOpen = False
 		Else
 			keepOpen = False
@@ -454,23 +475,82 @@ Function OnPlayerEquipped(Form akBaseObject)
 	If activeCount == 0 || !akBaseObject
 		Return
 	EndIf
-	If IsActive(OATH_STEEL) && (akBaseObject as Scroll)
-		BreakOath(OATH_STEEL, "you readied a scroll.")
-	EndIf
-	If IsActive(OATH_IRON) && (akBaseObject as Armor) && akBaseObject.HasKeyword(ArmorLight)
-		BreakOath(OATH_IRON, "you put on light armor.")
-	EndIf
 	If IsActive(OATH_ENDURANCE) && (akBaseObject as Potion) && Game.GetPlayer().IsInCombat()
+		; A potion is used up as it is equipped, so there is nothing to ask or undo.
 		BreakOath(OATH_ENDURANCE, "you took a potion, food or poison in combat.")
+		Return
 	EndIf
-	If IsActive(OATH_CLOSE) && (akBaseObject as Weapon) && akBaseObject.HasKeyword(WeapTypeBow) && !IsExemptBow(akBaseObject)
-		BreakOath(OATH_CLOSE, "you took up a bow.")
+	Int oath = -1
+	Int prompt = -1
+	String reason = ""
+	If IsActive(OATH_STEEL) && (akBaseObject as Scroll)
+		oath = OATH_STEEL
+		prompt = 0
+		reason = "you readied a scroll."
+	ElseIf IsActive(OATH_IRON) && (akBaseObject as Armor) && akBaseObject.HasKeyword(ArmorLight)
+		oath = OATH_IRON
+		prompt = 1
+		reason = "you put on light armor."
+	ElseIf IsActive(OATH_CLOSE) && (akBaseObject as Weapon) && akBaseObject.HasKeyword(WeapTypeBow) && !IsExemptBow(akBaseObject)
+		If IsExemptPlace()
+			Debug.Notification("This place calls for a bow. Your Oath of Close Quarters holds while you are here.")
+			Return
+		EndIf
+		oath = OATH_CLOSE
+		prompt = 2
+		reason = "you took up a bow."
 	EndIf
+	If oath < 0
+		Return
+	EndIf
+	If !ConfirmBreak(akBaseObject, prompt)
+		Return
+	EndIf
+	BreakOath(oath, reason)
+EndFunction
+
+; Asks before an equip breaks an oath. Returns True to go ahead and break it.
+; Cancel takes the item off again and puts back what it replaced, if that is known.
+Bool Function ConfirmBreak(Form akItem, Int aiPrompt)
+	InitConfirm()
+	If !SOT_ConfirmBreak || SOT_ConfirmBreak.GetValueInt() == 0
+		Return True
+	EndIf
+	Message box = None
+	If aiPrompt < BreakMessages.Length
+		box = BreakMessages[aiPrompt]
+	EndIf
+	If !box
+		Return True
+	EndIf
+	Float equipAt = Utility.GetCurrentRealTime()
+	If box.Show() == 0
+		Return True
+	EndIf
+	; What the new item replaced came off in the same moment. Read it before unequipping,
+	; which records the cancelled item as the last thing taken off.
+	Form previous = None
+	If lastOff && lastOff != akItem && lastOffAt >= equipAt - 1.0
+		previous = lastOff
+	EndIf
+	Actor player = Game.GetPlayer()
+	If player.IsEquipped(akItem)
+		player.UnequipItem(akItem, False, True)
+	EndIf
+	If previous && player.GetItemCount(previous) > 0 && !player.IsEquipped(previous)
+		player.EquipItem(previous, False, True)
+	EndIf
+	Debug.Notification("You think better of it. Your oath holds.")
+	Return False
 EndFunction
 
 Function OnPlayerUnequipped(Form akBaseObject)
 	If activeCount == 0 || !akBaseObject
 		Return
+	EndIf
+	If (akBaseObject as Armor) || (akBaseObject as Weapon)
+		lastOff = akBaseObject
+		lastOffAt = Utility.GetCurrentRealTime()
 	EndIf
 	If IsActive(OATH_SHIELD) && (akBaseObject as Armor) && akBaseObject.HasKeyword(ArmorShield)
 		; Give the player a moment to swap shields before judging.
@@ -510,6 +590,87 @@ Bool Function IsExemptBow(Form akWeapon)
 	EndIf
 	Int st = kj.GetStage()
 	Return st >= 40 && st < 200
+EndFunction
+
+; 0.3.0: places where the game itself asks for a bow. Equipping one there does not break the
+; Oath of Close Quarters, and the bow is put away when the player leaves (WatchExemptBow).
+; Interior cells, looked up by FormID in the DLC masters (all ship with Skyrim SE/AE):
+;   Dawnguard.esm  00140A DLC1Arkngthamz01   Arkngthamz, the tonal lock (Lost to the Ages)
+;   Dawnguard.esm  005734 DLC1Bthalft01      The Aetherium Forge, the two resonators over the west gate
+;   Dragonborn.esm 0142FA DLC2Fahlbtharz01   Fahlbtharz
+;   Dragonborn.esm 01D502 DLC2Fahlbtharz02   Fahlbtharz (zones 2-4: corridor, boilery, grand hall)
+;   Dragonborn.esm 01DD04 DLC2Fahlbtharz03
+;   Dragonborn.esm 01DD03 DLC2Fahlbtharz04
+;   Dawnguard.esm  009BDE DLC1HunterCave01   Dead Drop Falls / Dead Drop Mine, under Fort Dawnguard
+;   Dawnguard.esm  0181C8 DLC1HunterCave02
+; A missing master leaves its entries None, and nothing there is exempt.
+Function InitExemptCells()
+	If exemptReady
+		Return
+	EndIf
+	exemptCells = new Cell[8]
+	exemptCells[0] = Game.GetFormFromFile(0x00140A, "Dawnguard.esm") as Cell
+	exemptCells[1] = Game.GetFormFromFile(0x005734, "Dawnguard.esm") as Cell
+	exemptCells[2] = Game.GetFormFromFile(0x0142FA, "Dragonborn.esm") as Cell
+	exemptCells[3] = Game.GetFormFromFile(0x01D502, "Dragonborn.esm") as Cell
+	exemptCells[4] = Game.GetFormFromFile(0x01DD04, "Dragonborn.esm") as Cell
+	exemptCells[5] = Game.GetFormFromFile(0x01DD03, "Dragonborn.esm") as Cell
+	exemptCells[6] = Game.GetFormFromFile(0x009BDE, "Dawnguard.esm") as Cell
+	exemptCells[7] = Game.GetFormFromFile(0x0181C8, "Dawnguard.esm") as Cell
+	exemptReady = True
+EndFunction
+
+Bool Function IsExemptPlace()
+	InitExemptCells()
+	Cell here = Game.GetPlayer().GetParentCell()
+	If !here
+		Return False
+	EndIf
+	Int i = 0
+	While i < exemptCells.Length
+		If exemptCells[i] && here == exemptCells[i]
+			Return True
+		EndIf
+		i += 1
+	EndWhile
+	Return False
+EndFunction
+
+; Polled every few seconds by SOT_PlayerAliasScript, only while the player holds a bow in an
+; exempt place under the Oath of Close Quarters. Once they leave, the bow is put away without
+; breaking the oath. Returns True while the watch should go on.
+Bool Function WatchExemptBow()
+	If !IsActive(OATH_CLOSE)
+		Return False
+	EndIf
+	Actor player = Game.GetPlayer()
+	Weapon w = player.GetEquippedWeapon(False)
+	If !w || !w.HasKeyword(WeapTypeBow) || IsExemptBow(w)
+		Return False
+	EndIf
+	If IsExemptPlace()
+		Return True
+	EndIf
+	player.UnequipItem(w, False, True)
+	Debug.Notification("You put the bow away as you leave. Your Oath of Close Quarters holds.")
+	Return False
+EndFunction
+
+; 0.3.0 forms, resolved lazily so saves made before 0.3.0 get them without a reset.
+Function InitConfirm()
+	If confirmReady
+		Return
+	EndIf
+	If !SOT_ConfirmBreak
+		SOT_ConfirmBreak = Game.GetFormFromFile(0x000854, "SteelOath.esp") as GlobalVariable
+	EndIf
+	If BreakMessages.Length != 3 || !BreakMessages[0]
+		BreakMessages = new Message[3]
+		BreakMessages[0] = Game.GetFormFromFile(0x000855, "SteelOath.esp") as Message
+		BreakMessages[1] = Game.GetFormFromFile(0x000856, "SteelOath.esp") as Message
+		BreakMessages[2] = Game.GetFormFromFile(0x000857, "SteelOath.esp") as Message
+	EndIf
+	confirmReady = True
 EndFunction
 
 Bool Function IsActive(Int i)

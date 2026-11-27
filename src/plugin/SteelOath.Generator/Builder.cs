@@ -53,6 +53,7 @@ internal sealed class Builder
         var gTier3 = Global("SOT_Tier3Days", 7);
         var gCooldown = Global("SOT_CooldownHours", 72);
         var gPenalty = Global("SOT_PenaltyHours", 24);
+        var gConfirm = Global("SOT_ConfirmBreak", 1);
 
         // --- Magic effects -----------------------------------------------------------------------
         var mgefPower = Add(new MagicEffect(Id("SOT_SwearEffect"), R)
@@ -140,6 +141,8 @@ internal sealed class Builder
             Btn("Renounce an oath", Cond.Global(gActiveCount, CompareOperator.GreaterThan, 0)),
             Btn("My oaths"),
             Btn("Read the ledger"),
+            Btn("Stop asking before I break an oath", Cond.Global(gConfirm, CompareOperator.EqualTo, 1)),
+            Btn("Ask before I break an oath", Cond.Global(gConfirm, CompareOperator.EqualTo, 0)),
             Btn("Close"));
         var swearButtons = oaths.Select((o, i) => Btn(o.Name, Cond.Global(gAvailable[i], CompareOperator.EqualTo, 1))).ToList();
         swearButtons.Add(Btn("Back"));
@@ -148,6 +151,9 @@ internal sealed class Builder
         renounceButtons.Add(Btn("Back"));
         var msgRenounce = Msg("SOT_MsgRenounceMenu", Texts.RenounceMenu, renounceButtons.ToArray());
         var msgConfirm = oaths.Select(o => Msg($"SOT_MsgConfirm{o.Key}", o.Confirm, Btn("Swear it"), Btn("Back"))).ToArray();
+        // Asked before an equip that would break an oath. Button 0 keeps the item, 1 takes it off.
+        var msgBreak = Texts.BreakPrompts.Select(b => Msg($"SOT_MsgBreak{b.Key}", b.Text,
+            Btn("Equip and break your oath"), Btn("Cancel"))).ToArray();
 
         // --- Controller quest --------------------------------------------------------------------
         var quest = Add(new Quest(questOath, R)
@@ -191,6 +197,7 @@ internal sealed class Builder
                 Vmad.Obj("SOT_MsgIntro", msgIntro), Vmad.Obj("SOT_MsgMainMenu", msgMain),
                 Vmad.Obj("SOT_MsgSwearMenu", msgSwear), Vmad.Obj("SOT_MsgRenounceMenu", msgRenounce),
                 Vmad.ObjList("ConfirmMessages", msgConfirm),
+                Vmad.Obj("SOT_ConfirmBreak", gConfirm), Vmad.ObjList("BreakMessages", msgBreak),
                 // One real line feed. Papyrus string literals cannot hold one and the build
                 // compiler does not expand backslash escapes, so scripts take it from here.
                 Vmad.Str("LineBreak", "\n")))

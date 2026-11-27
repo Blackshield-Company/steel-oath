@@ -25,3 +25,4 @@ EndEvent
 Bool Function Is3DLoaded() native
 Event OnSpellCast(Form akSpell)
 EndEvent
+Cell Function GetParentCell() native

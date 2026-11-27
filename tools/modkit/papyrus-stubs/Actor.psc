@@ -29,3 +29,4 @@ Spell Function GetEquippedSpell(Int aiSource) native
 Race Function GetRace() native
 Bool Function IsEquipped(Form akItem) native
 Function EquipItem(Form akItem, Bool abPreventRemoval = False, Bool abSilent = False) native
+Function UnequipItem(Form akItem, Bool abPreventEquip = False, Bool abSilent = False) native

@@ -4,6 +4,11 @@ All notable changes to this project are documented here. Versions follow [Semant
 
 ## [Unreleased]
 
+### Added
+- Are you sure? Readying a scroll, putting on light armor or taking up a bow while it would break one of your oaths now asks first: *Equip and break your oath* or *Cancel*. Cancel takes the item off again, puts back the weapon or armor it replaced when it can, and the oath holds. Turn it off or on from the power's main menu, or with `set SOT_ConfirmBreak to 0`. A potion in combat is still not asked about, because the game uses it up as it is equipped. Suggested by jmalm123.
+- Places that call for a bow no longer break the Oath of Close Quarters: Arkngthamz and the Aetherium Forge (Lost to the Ages), Fahlbtharz on Solstheim, and Dead Drop Falls under Fort Dawnguard. Take up a bow there and the oath holds; when you leave, the bow is put away for you. Swearing the oath with a bow in hand is still refused everywhere. Suggested by jmalm123.
+- Save-compatible: existing records and FormIDs are unchanged. New records: `SOT_ConfirmBreak` (global, 1) and `SOT_MsgBreakSteel`, `SOT_MsgBreakIron`, `SOT_MsgBreakClose`. Still no SKSE, and Skyrim.esm is still the only master; the Dawnguard and Dragonborn cells are looked up at run time.
+
 ### Fixed
 - The FOMOD now installs its Data folders in lowercase (`scripts/`, `seq/`, `sound/`, `sound/voice/`). The game opens them by their lowercase names. On Linux (Proton), a Data folder that also holds a capitalised copy of one of them from another mod is read only from the exact-case folder, so the compiled scripts, the SEQ file or the voice files could go unread. Nothing changes on Windows, where folder case does not matter. No FormIDs changed.
 
