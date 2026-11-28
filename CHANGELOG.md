@@ -4,6 +4,10 @@ All notable changes to this project are documented here. Versions follow [Semant
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-27
+
+Early beta, not yet playtested in game.
+
 ### Added
 - Are you sure? Readying a scroll, putting on light armor or taking up a bow while it would break one of your oaths now asks first: *Equip and break your oath* or *Cancel*. Cancel takes the item off again, puts back the weapon or armor it replaced when it can, and the oath holds. Turn it off or on from the power's main menu, or with `set SOT_ConfirmBreak to 0`. A potion in combat is still not asked about, because the game uses it up as it is equipped. Suggested by jmalm123.
 - Places that call for a bow no longer break the Oath of Close Quarters: Arkngthamz and the Aetherium Forge (Lost to the Ages), Fahlbtharz on Solstheim, and Dead Drop Falls under Fort Dawnguard. Take up a bow there and the oath holds; when you leave, the bow is put away for you. Swearing the oath with a bow in hand is still refused everywhere. Suggested by jmalm123.
