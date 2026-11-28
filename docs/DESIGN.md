@@ -23,14 +23,33 @@
 | Shield | `OnObjectUnequipped` | If the unequipped item is an `Armor` with `ArmorShield`, a single 3-second real-time update checks `GetEquippedShield()`. No shield then means broken. Skipped while in werewolf form. |
 | Iron | `OnObjectEquipped` | Breaks on an `Armor` with `ArmorLight` (vanilla light shields carry it too). Swearing is refused while `WornHasKeyword(ArmorLight)`. |
 | Endurance | `OnObjectEquipped` | Breaks on a `Potion` (potions, food and poisons share that type) while `IsInCombat()`. |
-| Close Quarters | `OnObjectEquipped` | Breaks on a `Weapon` with `WeapTypeBow`. Swearing is refused while a bow is equipped. |
+| Close Quarters | `OnObjectEquipped` | Breaks on a `Weapon` with `WeapTypeBow`, unless it is Auriel's Bow during Kindred Judgment or the player is in an exempt cell (below). Swearing is refused while a bow is equipped, in any place. |
+
+### Asking before a break (0.3.0)
+
+When `SOT_ConfirmBreak` is 1 (the default), an equip that would break Steel (scroll), Iron (light armor) or Close Quarters (bow) shows `SOT_MsgBreakSteel` / `SOT_MsgBreakIron` / `SOT_MsgBreakClose` first: *Equip and break your oath* (0) or *Cancel* (1). `OnObjectEquipped` fires after the item is already equipped, so Cancel calls `UnequipItem` on it and, if a weapon or armor came off within a second of the equip (the item it replaced), re-equips that one. The break happens only on button 0. Endurance is never asked: a `Potion` is consumed as it is equipped. The main menu has *Stop asking* / *Ask before I break an oath* buttons, shown by the value of `SOT_ConfirmBreak`. The global and the three messages are resolved lazily by FormID (`InitConfirm()`) so saves from before 0.3.0 get them.
+
+### Places that call for a bow (0.3.0)
+
+Equipping a bow inside one of these interior cells does not break Close Quarters. The check is `Game.GetPlayer().GetParentCell()` against cells looked up with `Game.GetFormFromFile` in the DLC masters, so the plugin still has Skyrim.esm as its only master; a missing DLC just leaves its entries None.
+
+| Cell (EditorID) | FormID | Master | Place and why |
+|---|---|---|---|
+| `DLC1Arkngthamz01` | `00140A` | Dawnguard.esm | Arkngthamz: the tonal lock's kinetic resonators must be struck in order with ranged attacks (Lost to the Ages). |
+| `DLC1Bthalft01` | `005734` | Dawnguard.esm | The Aetherium Forge: two resonators above the west gate must be shot. |
+| `DLC2Fahlbtharz01` … `04` | `0142FA`, `01D502`, `01DD04`, `01DD03` | Dragonborn.esm | Fahlbtharz: resonators open gates and drive the boiler puzzle. |
+| `DLC1HunterCave01`, `DLC1HunterCave02` | `009BDE`, `0181C8` | Dawnguard.esm | Dead Drop Falls and Dead Drop Mine, under Fort Dawnguard: archery-target pressure plates lower bridges and raise gates. |
+
+Sources: cell EditorIDs from the UESP console location codes (Skyrim:Arkngthamz, Skyrim:The_Aetherium_Forge, Skyrim:Fahlbtharz, Skyrim:Dead_Drop_Falls); FormIDs from the `Mutagen.Bethesda.FormKeys.SkyrimSE` 3.4.0 package, the same source `Vanilla.cs` uses.
+
+While Close Quarters is active and a bow is held in an exempt cell, `SOT_PlayerAliasScript` runs a 3-second single update (`WatchExemptBow()`); once the player is outside the exempt cells the bow is unequipped silently and the oath holds. The poll stops as soon as no bow is held or the oath ends.
 
 Detection handlers return at once when no oath is active.
 
 ## Timing
 
 - Before the power is granted: a 30-second real-time poll that stops once the player is past Helgen and in control.
-- After that, there is never a repeating timer. `ScheduleTick()` registers one game-time update for the next moment anything changes (the next blessing tier, the end of a cooldown, the end of the oathbreaker penalty), and nothing at all when no oath or cooldown is pending.
+- After that, there is never a repeating timer (the one exception is the 3-second bow watch above, which runs only while a bow is held in an exempt place). `ScheduleTick()` registers one game-time update for the next moment anything changes (the next blessing tier, the end of a cooldown, the end of the oathbreaker penalty), and nothing at all when no oath or cooldown is pending.
 - Text: Papyrus string literals never contain backslash escapes (the build compiler and the game do not expand them). Line breaks come from `SOT_OathScript.LineBreak`, a string property holding one real LF that the generator fills; `Br()` falls back to a space when it is empty (a pre-0.1.2 save). `check_string_escapes.py` and the plugin validator fail the build on a literal backslash escape.
 
 ## Scaled down from the concept (documented on purpose)

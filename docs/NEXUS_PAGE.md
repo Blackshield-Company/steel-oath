@@ -75,7 +75,7 @@ As with any scripted mod, don't remove it mid-playthrough. If you must, renounce
 [*]Only vows the game can detect are offered. Mercy, honesty or "never flee" can't be checked from vanilla scripts, so they're left out on purpose.
 [*]The Oath of Steel counts every hand-cast spell. Telling spell schools apart would need SKSE.
 [*]Werewolf form doesn't break the Oath of the Shield. Re-equip your shield after changing back.
-[*]Settings are console globals for now: [code]set SOT_BountyEnabled to 1 / set SOT_BountyGold to 100 / set SOT_MaxOaths to 3 / set SOT_Tier2Days to 3 / set SOT_Tier3Days to 7 / set SOT_PenaltyHours to 24 / set SOT_CooldownHours to 72[/code]
+[*]Settings are console globals for now: [code]set SOT_ConfirmBreak to 1 / set SOT_BountyEnabled to 1 / set SOT_BountyGold to 100 / set SOT_MaxOaths to 3 / set SOT_Tier2Days to 3 / set SOT_Tier3Days to 7 / set SOT_PenaltyHours to 24 / set SOT_CooldownHours to 72[/code]
 [/list]
 
 [size=4][b]Roadmap[/b][/size]

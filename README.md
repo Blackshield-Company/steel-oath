@@ -21,12 +21,14 @@ Every vow is something the game reports to scripts without SKSE, so the mod can 
 | Oath of the Shield | Keep a shield on your arm. A 3-second grace lets you swap shields. You need a shield to swear it. | Block +10 / +20 / +30 |
 | Oath of Iron | Wear no light armor, light shields included. Heavy armor and clothing are fine. | Armor +30 / +60 / +100 |
 | Oath of Endurance | No potions, food or poisons while in combat. | Stamina +20 / +40 / +60 |
-| Oath of Close Quarters | Never equip a bow (Auriel's Bow is allowed during the Kindred Judgment fight with Harkon). | One-Handed and Two-Handed +10 / +20 / +30 |
+| Oath of Close Quarters | Never equip a bow. Allowed: Auriel's Bow during the Kindred Judgment fight with Harkon, and any bow in the places the game asks for one (see below). | One-Handed and Two-Handed +10 / +20 / +30 |
 
 - **Up to three oaths at once.**
 - **Blessings grow**: Sworn when you swear, Steadfast after 3 in-game days, Unbroken after 7.
 - **Breaking an oath** ends it and its blessing, makes you an **Oathbreaker** (Health −30, Stamina −30) for 24 in-game hours, and puts that oath on a 72-hour cooldown.
 - **Renouncing** an oath from the menu ends it without the penalty, but the cooldown still applies.
+- **Are you sure?** Readying a scroll, putting on light armor or taking up a bow while it would break one of your oaths first asks *Equip and break your oath* or *Cancel*. Cancel takes the item off again (and puts back what it replaced, when it can), and the oath holds. Turn the question off or on from the power's main menu, or with `set SOT_ConfirmBreak to 0`. Potions in combat can't be asked about: the game uses them up the moment they are equipped.
+- **Places that call for a bow** don't break the Oath of Close Quarters: Arkngthamz and the Aetherium Forge (Lost to the Ages), Fahlbtharz on Solstheim, and Dead Drop Falls under Fort Dawnguard. Take up a bow there and the oath holds; when you leave, the bow is put away for you.
 - The menu's *My oaths* shows how long each oath has held, when the next blessing comes, cooldowns and any time left as an oathbreaker.
 
 ## The sworn word
@@ -55,6 +57,7 @@ Safe to add to an existing save: the power arrives within a minute of loading (a
 ## Console tunables
 
 ```
+set SOT_ConfirmBreak to 1      (0 stops the "are you sure?" question before an equip breaks an oath)
 set SOT_BountyEnabled to 1     (0 disables wronged-hold bounties)
 set SOT_BountyGold to 100      (non-violent bounty per broken oath)
 set SOT_MaxOaths to 3          (oaths held at once)

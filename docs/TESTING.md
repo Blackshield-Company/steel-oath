@@ -42,7 +42,7 @@ Tip: to fast-forward game time, `set timescale to 2000` for a few seconds, then 
 - [ ] With the other mods in the series installed, all plugins load.
 
 ## 1. Menus
-- [ ] Cast the power. The menu shows active 0 / 3, broken 0, longest 0 days, and *Swear an oath / My oaths / Read the ledger / Close*. *Renounce* is hidden.
+- [ ] Cast the power. The menu shows active 0 / 3, broken 0, longest 0 days, and *Swear an oath / My oaths / Read the ledger / Stop asking before I break an oath / Close*. *Renounce* is hidden.
 - [ ] *Swear an oath* lists all five oaths and *Back*. Each opens a confirmation with the vow and blessing (days filled in as 3 and 7). *Back* returns.
 - [ ] *My oaths* says "You hold no oaths."
 
@@ -54,13 +54,31 @@ Tip: to fast-forward game time, `set timescale to 2000` for a few seconds, then 
 - [ ] With three oaths active, *Swear an oath* is hidden in the main menu.
 
 ## 3. Breaking each oath
-For each: confirm the "Oath broken: …" notification, the blessing disappears from Active Effects, **Oathbreaker** (Health −30, Stamina −30) appears, and `show SOT_OathsBroken` goes up by one.
+For Steel (scroll), Iron and Close Quarters, an "are you sure?" box appears first; choose *Equip and break your oath*. For each: confirm the "Oath broken: …" notification, the blessing disappears from Active Effects, **Oathbreaker** (Health −30, Stamina −30) appears, and `show SOT_OathsBroken` goes up by one.
 
 - [ ] **Steel**: cast a spell from either hand → broken. Separately: shouting, using a lesser power (e.g. a racial power), using a staff, drinking a potion do **not** break it. Equipping a scroll breaks it.
 - [ ] **Shield**: unequip the shield → broken about 3 seconds later. Swapping directly to another shield does **not** break it. Equipping a two-handed weapon (which removes the shield) breaks it.
 - [ ] **Iron**: put on a light armor piece → broken. Heavy pieces and clothes don't.
 - [ ] **Endurance**: drink a potion or eat food in combat → broken. Outside combat, nothing happens. Also try applying a poison in combat and report whether it broke the oath.
 - [ ] **Close Quarters**: equip a bow → broken. Swords, axes, daggers and staves don't.
+
+## 3a. Are you sure? (0.3.0)
+- [ ] With Close Quarters sworn and a sword in hand, equip a bow from the inventory. The box *Equip and break your oath / Cancel* appears (check that it shows over the inventory menu). *Cancel*: the bow comes off, the sword goes back in hand, "Your oath holds." and `show SOT_OathsBroken` is unchanged.
+- [ ] Same with a bow on a favorites hotkey, outside the inventory.
+- [ ] Iron: in a heavy cuirass, equip a light cuirass, *Cancel*: the light piece comes off and the heavy cuirass goes back on. With the Shield oath also sworn, swap a heavy shield for a light one, *Cancel*: the heavy shield is back within 3 seconds and the Shield oath holds.
+- [ ] Steel: ready a scroll, *Cancel*: the scroll leaves your hand, oath holds.
+- [ ] *Equip and break your oath* breaks the oath exactly as before.
+- [ ] Main menu shows *Stop asking before I break an oath*. Choose it: `show SOT_ConfirmBreak` is 0, equips break with no question, and the button now reads *Ask before I break an oath*.
+- [ ] Endurance: a potion in combat still breaks the oath without a question.
+- [ ] On a save made with 0.2.x, the question appears without any reset.
+
+## 3b. Places that call for a bow (0.3.0)
+Use `coc` to reach each cell with Close Quarters sworn: `coc DLC1Arkngthamz01`, `coc DLC1Bthalft01`, `coc DLC2Fahlbtharz01`, `coc DLC1HunterCave01`.
+- [ ] Equip a bow: "This place calls for a bow…" and no break, no question. Shoot a resonator / archery target.
+- [ ] Move to another zone of the same place (e.g. Fahlbtharz02, Dead Drop Mine): the bow stays.
+- [ ] Walk out the door: within about 3 seconds the bow is put away, "Your Oath of Close Quarters holds." and the oath is still active.
+- [ ] Outside these places, a bow still breaks the oath (after the question).
+- [ ] Swearing Close Quarters with a bow equipped is still refused inside these places.
 
 ## 4. Growth, penalty, cooldown
 - [ ] `set SOT_Tier2Days to 0.1` and `set SOT_Tier3Days to 0.2`, swear an oath, then wait 3 hours. "The blessing grows: Steadfast" appears and the Active Effects entry updates. Wait 2 more hours: Unbroken. (Set them back to 3 and 7 afterwards.)

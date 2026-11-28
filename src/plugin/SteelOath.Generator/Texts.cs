@@ -29,6 +29,16 @@ internal static class Texts
             new[] { new Stat("SOT_FortOneHanded", "One-Handed", new[] { 10f, 20f, 30f }), new Stat("SOT_FortTwoHanded", "Two-Handed", new[] { 10f, 20f, 30f }) }),
     };
 
+    public sealed record BreakPrompt(string Key, string Text);
+
+    // Order matters: SOT_OathScript.BreakMessages index 0 = Steel, 1 = Iron, 2 = Close Quarters.
+    public static readonly BreakPrompt[] BreakPrompts =
+    {
+        new("Steel", "OATH OF STEEL\n\nReadying a scroll breaks your Oath of Steel.\n\nEquip it and break your oath?"),
+        new("Iron", "OATH OF IRON\n\nPutting on light armor breaks your Oath of Iron.\n\nEquip it and break your oath?"),
+        new("Close", "OATH OF CLOSE QUARTERS\n\nTaking up a bow breaks your Oath of Close Quarters.\n\nEquip it and break your oath?"),
+    };
+
     public static readonly string[] NameTitles =
     {
         "Oathbreaker", "No name yet", "Keeps their word", "A name in the holds", "Their word is good steel",
